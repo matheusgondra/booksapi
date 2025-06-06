@@ -3,6 +3,8 @@ package com.matheusgondra.booksapi.application.service;
 import org.springframework.stereotype.Service;
 
 import com.matheusgondra.booksapi.application.protocol.gateway.LoadUserByEmailGateway;
+import com.matheusgondra.booksapi.domain.exception.UserAlreadyExistsException;
+import com.matheusgondra.booksapi.domain.models.User;
 import com.matheusgondra.booksapi.domain.usecase.SignUpUseCase;
 
 @Service
@@ -15,7 +17,10 @@ public class SignUpService implements SignUpUseCase {
 
     @Override
     public SignUpResponse signUp(SignUpParam param) {
-        this.loadUserByEmailGateway.loadByEmail(param.email());
+        User user = this.loadUserByEmailGateway.loadByEmail(param.email());
+        if (user != null) {
+            throw new UserAlreadyExistsException();
+        }
         
         return null;
     }

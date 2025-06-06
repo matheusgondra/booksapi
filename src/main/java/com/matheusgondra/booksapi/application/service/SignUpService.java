@@ -23,16 +23,15 @@ public class SignUpService implements SignUpUseCase {
 
     @Override
     public SignUpResponse signUp(SignUpParam param) {
-        User user = this.loadUserByEmailGateway.loadByEmail(param.email());
-        if (user != null) {
+        this.loadUserByEmailGateway.loadByEmail(param.email()).ifPresent(user -> {
             throw new UserAlreadyExistsException();
-        }
+        });
         
         String hash = this.hashGenerator.generate(param.password());
-        user = new User(param.firstName(), param.lastName(), param.email(), hash);
+        User user = new User(param.firstName(), param.lastName(), param.email(), hash);
 
-        this.addUserGateway.add(user);
+        user = this.addUserGateway.add(user);
 
-        return null;
+        return new SignUpResponse(user);
     }
 }

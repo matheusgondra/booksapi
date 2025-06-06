@@ -69,4 +69,12 @@ class SignUpServiceTest {
 
         verify(hashGenerator).generate(signupParamMock.password());
     }
+
+    @Test
+    @DisplayName("Should throw if LoadUserByEmailGateway throws")
+    void case04() {
+        when(loadUserByEmailGateway.loadByEmail(emailMock)).thenThrow(new RuntimeException());
+
+        assertThrows(RuntimeException.class, () -> sut.signUp(signupParamMock));
+    }
 }

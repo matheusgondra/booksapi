@@ -1,11 +1,13 @@
 package com.matheusgondra.booksapi.application.service;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -22,6 +24,7 @@ import com.matheusgondra.booksapi.application.protocol.gateway.LoadUserByEmailGa
 import com.matheusgondra.booksapi.domain.exception.UserAlreadyExistsException;
 import com.matheusgondra.booksapi.domain.models.User;
 import com.matheusgondra.booksapi.domain.usecase.SignUpUseCase.SignUpParam;
+import com.matheusgondra.booksapi.domain.usecase.SignUpUseCase.SignUpResponse;
 
 @ExtendWith(MockitoExtension.class)
 class SignUpServiceTest {
@@ -51,11 +54,22 @@ class SignUpServiceTest {
         signupParamMock.password(),
         LocalDateTime.now(),
         LocalDateTime.now());
+    private final User userCreated = new User(
+        UUID.randomUUID(),
+        signupParamMock.firstName(),
+        signupParamMock.lastName(),
+        signupParamMock.email(),
+        "hashedPassword",
+        LocalDateTime.now(),
+        LocalDateTime.now()
+    );
+    private final SignUpResponse signUpResponseMock = new SignUpResponse(userCreated);
 
     @BeforeEach
     void setup() {
-        lenient().when(loadUserByEmailGateway.loadByEmail(emailMock)).thenReturn(null);
+        lenient().when(loadUserByEmailGateway.loadByEmail(emailMock)).thenReturn(Optional.empty());
         lenient().when(hashGenerator.generate(signupParamMock.password())).thenReturn("hashedPassword");
+        lenient().when(addUserGateway.add(any(User.class))).thenReturn(userCreated);
     }
 
     @Test
@@ -69,7 +83,7 @@ class SignUpServiceTest {
     @Test
     @DisplayName("Should throw UserAlreadyExistsException if user already exists")
     void case02() {
-        when(loadUserByEmailGateway.loadByEmail(emailMock)).thenReturn(userMock);
+        when(loadUserByEmailGateway.loadByEmail(emailMock)).thenReturn(Optional.of(userMock));
 
         assertThrows(UserAlreadyExistsException.class, () -> sut.signUp(signupParamMock));
     }
@@ -115,8 +129,16 @@ class SignUpServiceTest {
     @Test
     @DisplayName("Should throw if AddUserGateway throws")
     void case07() {
-        when(addUserGateway.add(userMock)).thenThrow(RuntimeException.class);
+        when(addUserGateway.add(any(User.class))).thenThrow(RuntimeException.class);
 
         assertThrows(RuntimeException.class, () -> sut.signUp(signupParamMock));
+    }
+
+    @Test
+    @DisplayName("Should return a SignUpResponse on success")
+    void case08() {
+        SignUpResponse result = sut.signUp(signupParamMock);
+
+        assert result.equals(signUpResponseMock);
     }
 }

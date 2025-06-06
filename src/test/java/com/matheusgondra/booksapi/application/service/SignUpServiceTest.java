@@ -77,4 +77,12 @@ class SignUpServiceTest {
 
         assertThrows(RuntimeException.class, () -> sut.signUp(signupParamMock));
     }
+
+    @Test
+    @DisplayName("Should throw if HashGenerator throws")
+    void case05() {
+        when(hashGenerator.generate(signupParamMock.password())).thenThrow(new RuntimeException());
+
+        assertThrows(RuntimeException.class, () -> sut.signUp(signupParamMock));
+    }
 }

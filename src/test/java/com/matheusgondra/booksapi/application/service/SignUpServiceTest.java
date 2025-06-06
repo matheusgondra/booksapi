@@ -14,6 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.matheusgondra.booksapi.application.protocol.cryptography.HashGenerator;
 import com.matheusgondra.booksapi.application.protocol.gateway.LoadUserByEmailGateway;
 import com.matheusgondra.booksapi.domain.exception.UserAlreadyExistsException;
 import com.matheusgondra.booksapi.domain.models.User;
@@ -26,6 +27,9 @@ class SignUpServiceTest {
 
     @Mock
     private LoadUserByEmailGateway loadUserByEmailGateway;
+
+    @Mock
+    private HashGenerator hashGenerator;
 
     private final String emailMock = "any@email.com";
     private final SignUpParam signupParamMock = new SignUpParam(
@@ -56,5 +60,13 @@ class SignUpServiceTest {
         when(loadUserByEmailGateway.loadByEmail(emailMock)).thenReturn(userMock);
 
         assertThrows(UserAlreadyExistsException.class, () -> sut.signUp(signupParamMock));
+    }
+
+    @Test
+    @DisplayName("Should call HashGenerator with correct param")
+    void case03() {
+        sut.signUp(signupParamMock);
+
+        verify(hashGenerator).generate(signupParamMock.password());
     }
 }

@@ -111,4 +111,12 @@ class SignUpServiceTest {
 
         verify(addUserGateway).add(expectedUser);
     }
+
+    @Test
+    @DisplayName("Should throw if AddUserGateway throws")
+    void case07() {
+        when(addUserGateway.add(userMock)).thenThrow(RuntimeException.class);
+
+        assertThrows(RuntimeException.class, () -> sut.signUp(signupParamMock));
+    }
 }

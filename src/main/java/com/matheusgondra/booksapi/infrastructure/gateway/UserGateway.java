@@ -2,12 +2,13 @@ package com.matheusgondra.booksapi.infrastructure.gateway;
 
 import java.util.Optional;
 
+import com.matheusgondra.booksapi.application.protocol.gateway.AddUserGateway;
 import com.matheusgondra.booksapi.application.protocol.gateway.LoadUserByEmailGateway;
 import com.matheusgondra.booksapi.domain.models.User;
 import com.matheusgondra.booksapi.infrastructure.mapper.UserMapper;
 import com.matheusgondra.booksapi.infrastructure.repository.UserRepository;
 
-public class UserGateway implements LoadUserByEmailGateway {
+public class UserGateway implements LoadUserByEmailGateway, AddUserGateway {
 	private final UserRepository userRepository;
 
 	public UserGateway(UserRepository userRepository) {
@@ -17,5 +18,11 @@ public class UserGateway implements LoadUserByEmailGateway {
 	@Override
 	public Optional<User> loadByEmail(String email) {
 		return userRepository.findByEmail(email).map(UserMapper::toDomain);
+	}
+
+	@Override
+	public User add(User user) {
+		this.userRepository.save(UserMapper.toEntity(user));
+		return null;
 	}
 }

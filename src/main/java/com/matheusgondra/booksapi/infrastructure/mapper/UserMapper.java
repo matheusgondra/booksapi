@@ -14,4 +14,15 @@ public class UserMapper {
 				entity.getCreatedAt(),
 				entity.getUpdatedAt());
 	}
+
+	public static UserEntity toEntity(User user) {
+		return new UserEntity(
+				user.getId(),
+				user.getFirstName(),
+				user.getLastName(),
+				user.getEmail(),
+				user.getPassword(),
+				user.getCreatedAt(),
+				user.getUpdatedAt());
+	}
 }

@@ -1,5 +1,6 @@
 package com.matheusgondra.booksapi.infrastructure.gateway;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -91,6 +92,14 @@ public class UserGatewayTest {
 			sut.add(userMock);
 
 			verify(userRepository).save(UserMapper.toEntity(userMock));
+		}
+
+		@Test
+		@DisplayName("Should throw if UserRepository.save throws an exception")
+		void case02() {
+			when(userRepository.save(UserMapper.toEntity(userMock))).thenThrow(new RuntimeException());
+
+			assertThrows(RuntimeException.class, () -> sut.add(userMock));
 		}
 	}
 }

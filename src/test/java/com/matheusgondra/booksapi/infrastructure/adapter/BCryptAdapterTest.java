@@ -1,6 +1,8 @@
 package com.matheusgondra.booksapi.infrastructure.adapter;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,5 +27,13 @@ public class BCryptAdapterTest {
 		sut.generate(value);
 
 		verify(encoder).encode(value);
+	}
+
+	@Test
+	@DisplayName("Should throw if PasswordEncoder.encode throws")
+	void case02() {
+		when(encoder.encode("anyValue")).thenThrow(new RuntimeException("Error encoding"));
+
+		assertThrows(RuntimeException.class, () -> sut.generate("anyValue"));
 	}
 }

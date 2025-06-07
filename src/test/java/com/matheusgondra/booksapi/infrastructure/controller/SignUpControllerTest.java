@@ -32,6 +32,7 @@ public class SignUpControllerTest {
 	private UserRepository repository;
 
 	private final SignUpRequestDTO dto = new SignUpRequestDTO("john", "doe", "johndoe@email.com", "Password@123");
+	private final SignUpRequestDTO invalidDto = new SignUpRequestDTO("john", "doe", "johndoeemail.com", "Password@123");
 
 	@BeforeEach
 	void setUp() {
@@ -41,10 +42,16 @@ public class SignUpControllerTest {
 	@Test
 	@DisplayName("Should return 201 on success")
 	void case01() throws Exception {
-		mockMvc.perform(this.signUp()).andExpect(status().isCreated());
+		mockMvc.perform(this.signUp(this.dto)).andExpect(status().isCreated());
 	}
 
-	private RequestBuilder signUp() throws Exception {
+	@Test
+	@DisplayName("Should return 400 if request is invalid")
+	void case02() throws Exception {
+		mockMvc.perform(this.signUp(this.invalidDto)).andExpect(status().isBadRequest());
+	}
+
+	private RequestBuilder signUp(SignUpRequestDTO dto) throws Exception {
 		return post("/api/signup")
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON)

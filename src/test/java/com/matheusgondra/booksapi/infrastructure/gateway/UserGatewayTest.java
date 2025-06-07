@@ -19,6 +19,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.matheusgondra.booksapi.domain.models.User;
 import com.matheusgondra.booksapi.infrastructure.entity.UserEntity;
+import com.matheusgondra.booksapi.infrastructure.mapper.UserMapper;
 import com.matheusgondra.booksapi.infrastructure.repository.UserRepository;
 
 @ExtendWith(MockitoExtension.class)
@@ -29,23 +30,24 @@ public class UserGatewayTest {
 	@Mock
 	private UserRepository userRepository;
 
+	private final String email = "any@email.com";
+	private final UserEntity userEntityMock = new UserEntity(
+			UUID.randomUUID(),
+			"anyFirstName",
+			"anyLastName",
+			email,
+			"anyPassword",
+			LocalDateTime.now(),
+			LocalDateTime.now());
+	private final User userMock = new User("anyFirstName", "anyLastName", email, "anyPassword");
+
+	@BeforeEach
+	void setup() {
+		lenient().when(userRepository.findByEmail(email)).thenReturn(Optional.of(userEntityMock));
+	}
+
 	@Nested
 	class LoadUserByEmailGatewayTests {
-		private final String email = "any@email.com";
-		private final UserEntity userEntityMock = new UserEntity(
-				UUID.randomUUID(),
-				"anyFirstName",
-				"anyLastName",
-				email,
-				"anyPassword",
-				LocalDateTime.now(),
-				LocalDateTime.now());
-
-		@BeforeEach
-		void setup() {
-			lenient().when(userRepository.findByEmail(email)).thenReturn(Optional.of(userEntityMock));
-		}
-
 		@Test
 		@DisplayName("Should call UserRepository.findByEmail with correct valid")
 		void case01() {
@@ -78,6 +80,17 @@ public class UserGatewayTest {
 			assert user.getPassword().equals(userEntityMock.getPassword());
 			assert user.getCreatedAt().equals(userEntityMock.getCreatedAt());
 			assert user.getUpdatedAt().equals(userEntityMock.getUpdatedAt());
+		}
+	}
+
+	@Nested
+	class AddUserByGatewayTests {
+		@Test
+		@DisplayName("Should call UserRepository.save with correct value")
+		void case01() {
+			sut.add(userMock);
+
+			verify(userRepository).save(UserMapper.toEntity(userMock));
 		}
 	}
 }

@@ -20,10 +20,11 @@ public class BCryptAdapterTest {
 	@Mock
 	private PasswordEncoder encoder;
 
+	private final String value = "anyValue";
+
 	@Test
 	@DisplayName("Should call PasswordEncoder.encode with correct value")
 	void case01() {
-		String value = "anyValue";
 		sut.generate(value);
 
 		verify(encoder).encode(value);
@@ -32,8 +33,18 @@ public class BCryptAdapterTest {
 	@Test
 	@DisplayName("Should throw if PasswordEncoder.encode throws")
 	void case02() {
-		when(encoder.encode("anyValue")).thenThrow(new RuntimeException("Error encoding"));
+		when(encoder.encode(value)).thenThrow(new RuntimeException("Error encoding"));
 
 		assertThrows(RuntimeException.class, () -> sut.generate("anyValue"));
+	}
+
+	@Test
+	@DisplayName("Should return a hash on success")
+	void case03() {
+		when(encoder.encode(value)).thenReturn("hashedValue");
+
+		String result = sut.generate(value);
+
+		assert result.equals("hashedValue");
 	}
 }

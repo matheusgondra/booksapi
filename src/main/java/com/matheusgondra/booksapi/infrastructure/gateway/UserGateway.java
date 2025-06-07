@@ -5,6 +5,7 @@ import java.util.Optional;
 import com.matheusgondra.booksapi.application.protocol.gateway.AddUserGateway;
 import com.matheusgondra.booksapi.application.protocol.gateway.LoadUserByEmailGateway;
 import com.matheusgondra.booksapi.domain.models.User;
+import com.matheusgondra.booksapi.infrastructure.entity.UserEntity;
 import com.matheusgondra.booksapi.infrastructure.mapper.UserMapper;
 import com.matheusgondra.booksapi.infrastructure.repository.UserRepository;
 
@@ -22,7 +23,7 @@ public class UserGateway implements LoadUserByEmailGateway, AddUserGateway {
 
 	@Override
 	public User add(User user) {
-		this.userRepository.save(UserMapper.toEntity(user));
-		return null;
+		UserEntity entity = this.userRepository.save(UserMapper.toEntity(user));
+		return UserMapper.toDomain(entity);
 	}
 }

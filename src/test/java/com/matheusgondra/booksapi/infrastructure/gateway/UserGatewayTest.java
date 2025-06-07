@@ -45,6 +45,7 @@ public class UserGatewayTest {
 	@BeforeEach
 	void setup() {
 		lenient().when(userRepository.findByEmail(email)).thenReturn(Optional.of(userEntityMock));
+		lenient().when(userRepository.save(UserMapper.toEntity(userMock))).thenReturn(userEntityMock);
 	}
 
 	@Nested
@@ -100,6 +101,14 @@ public class UserGatewayTest {
 			when(userRepository.save(UserMapper.toEntity(userMock))).thenThrow(new RuntimeException());
 
 			assertThrows(RuntimeException.class, () -> sut.add(userMock));
+		}
+
+		@Test
+		@DisplayName("Should return User on success")
+		void case03() {
+			User result = sut.add(userMock);
+
+			assert result.equals(UserMapper.toDomain(userEntityMock));
 		}
 	}
 }

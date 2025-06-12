@@ -20,7 +20,10 @@ public class LoginService implements LoginUseCase {
         User user = this.loadUserByEmailGateway.loadByEmail(request.email())
                 .orElseThrow(InvalidCredentialsException::new);
 
-        this.hashCompare.compare(request.password(), user.getPassword());
+        boolean isValidPassword = this.hashCompare.compare(request.password(), user.getPassword());
+        if (!isValidPassword) {
+            throw new InvalidCredentialsException();
+        }
 
         return null;
     }

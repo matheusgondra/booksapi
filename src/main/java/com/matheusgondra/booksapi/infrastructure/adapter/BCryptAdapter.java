@@ -2,9 +2,10 @@ package com.matheusgondra.booksapi.infrastructure.adapter;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import com.matheusgondra.booksapi.application.protocol.cryptography.HashCompare;
 import com.matheusgondra.booksapi.application.protocol.cryptography.HashGenerator;
 
-public class BCryptAdapter implements HashGenerator {
+public class BCryptAdapter implements HashGenerator, HashCompare {
 	private final PasswordEncoder encoder;
 
 	public BCryptAdapter(PasswordEncoder encoder) {
@@ -14,5 +15,10 @@ public class BCryptAdapter implements HashGenerator {
 	@Override
 	public String generate(String value) {
 		return this.encoder.encode(value);
+	}
+
+	@Override
+	public boolean compare(String rawValue, String hashedValue) {
+		return this.encoder.matches(rawValue, hashedValue);
 	}
 }

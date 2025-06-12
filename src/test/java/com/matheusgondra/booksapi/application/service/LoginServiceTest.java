@@ -17,6 +17,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.matheusgondra.booksapi.application.protocol.cryptography.HashCompare;
+import com.matheusgondra.booksapi.application.protocol.cryptography.TokenGenerator;
 import com.matheusgondra.booksapi.application.protocol.gateway.LoadUserByEmailGateway;
 import com.matheusgondra.booksapi.domain.exception.InvalidCredentialsException;
 import com.matheusgondra.booksapi.domain.models.User;
@@ -29,6 +30,9 @@ public class LoginServiceTest {
 
     @Mock
     private LoadUserByEmailGateway loadUserByEmailGateway;
+    
+    @Mock
+    private TokenGenerator tokenGenerator;
 
     @Mock
     private HashCompare hashCompare;
@@ -95,5 +99,13 @@ public class LoginServiceTest {
         when(hashCompare.compare(request.password(), userMock.getPassword())).thenThrow(new RuntimeException());
 
         assertThrows(RuntimeException.class, () -> sut.login(request));
+    }
+
+    @Test
+    @DisplayName("Should call TokenGenerator with correct value")
+    void case07() {
+        sut.login(request);
+
+        verify(tokenGenerator).generate(userMock.getId().toString());
     }
 }

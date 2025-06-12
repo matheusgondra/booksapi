@@ -88,4 +88,12 @@ public class LoginServiceTest {
 
         assertThrows(InvalidCredentialsException.class, () -> sut.login(request));
     }
+
+    @Test
+    @DisplayName("Should throw if HashCompare throws")
+    void case06() {
+        when(hashCompare.compare(request.password(), userMock.getPassword())).thenThrow(new RuntimeException());
+
+        assertThrows(RuntimeException.class, () -> sut.login(request));
+    }
 }

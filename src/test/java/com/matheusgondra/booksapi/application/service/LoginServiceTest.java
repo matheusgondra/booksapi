@@ -30,7 +30,7 @@ public class LoginServiceTest {
 
     @Mock
     private LoadUserByEmailGateway loadUserByEmailGateway;
-    
+
     @Mock
     private TokenGenerator tokenGenerator;
 
@@ -49,8 +49,15 @@ public class LoginServiceTest {
 
     @BeforeEach
     void setup() {
-        lenient().when(loadUserByEmailGateway.loadByEmail(request.email())).thenReturn(Optional.of(userMock));
-        lenient().when(hashCompare.compare(request.password(), userMock.getPassword())).thenReturn(true);
+        lenient()
+                .when(loadUserByEmailGateway.loadByEmail(request.email()))
+                .thenReturn(Optional.of(userMock));
+        lenient()
+                .when(hashCompare.compare(request.password(), userMock.getPassword()))
+                .thenReturn(true);
+        lenient()
+                .when(tokenGenerator.generate(userMock.getId().toString()))
+                .thenReturn("anyAccessToken");
     }
 
     @Test
@@ -115,5 +122,13 @@ public class LoginServiceTest {
         when(tokenGenerator.generate(userMock.getId().toString())).thenThrow(new RuntimeException());
 
         assertThrows(RuntimeException.class, () -> sut.login(request));
+    }
+
+    @Test
+    @DisplayName("Should return an access token on success")
+    void case09() {
+        String accessToken = sut.login(request);
+
+        assert accessToken.equals("anyAccessToken");
     }
 }

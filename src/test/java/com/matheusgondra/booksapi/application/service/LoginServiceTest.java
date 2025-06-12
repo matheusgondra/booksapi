@@ -108,4 +108,12 @@ public class LoginServiceTest {
 
         verify(tokenGenerator).generate(userMock.getId().toString());
     }
+
+    @Test
+    @DisplayName("Should throw if TokenGenerator throws")
+    void case08() {
+        when(tokenGenerator.generate(userMock.getId().toString())).thenThrow(new RuntimeException());
+
+        assertThrows(RuntimeException.class, () -> sut.login(request));
+    }
 }

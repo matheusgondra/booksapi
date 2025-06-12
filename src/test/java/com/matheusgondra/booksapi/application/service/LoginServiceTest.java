@@ -16,6 +16,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.matheusgondra.booksapi.application.protocol.cryptography.HashCompare;
 import com.matheusgondra.booksapi.application.protocol.gateway.LoadUserByEmailGateway;
 import com.matheusgondra.booksapi.domain.exception.InvalidCredentialsException;
 import com.matheusgondra.booksapi.domain.models.User;
@@ -28,6 +29,9 @@ public class LoginServiceTest {
 
     @Mock
     private LoadUserByEmailGateway loadUserByEmailGateway;
+
+    @Mock
+    private HashCompare hashCompare;
 
     private final LoginRequest request = new LoginRequest("any@email.com", "anyPassword");
     private final User userMock = new User(
@@ -66,5 +70,13 @@ public class LoginServiceTest {
         when(loadUserByEmailGateway.loadByEmail(request.email())).thenReturn(Optional.empty());
 
         assertThrows(InvalidCredentialsException.class, () -> sut.login(request));
+    }
+
+    @Test
+    @DisplayName("Should call HashCompare with correct values")
+    void case04() {
+        sut.login(request);
+
+        verify(hashCompare).compare(request.password(), userMock.getPassword());
     }
 }

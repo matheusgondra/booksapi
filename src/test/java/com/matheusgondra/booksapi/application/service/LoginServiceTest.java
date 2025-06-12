@@ -46,6 +46,7 @@ public class LoginServiceTest {
     @BeforeEach
     void setup() {
         lenient().when(loadUserByEmailGateway.loadByEmail(request.email())).thenReturn(Optional.of(userMock));
+        lenient().when(hashCompare.compare(request.password(), userMock.getPassword())).thenReturn(true);
     }
 
     @Test
@@ -78,5 +79,13 @@ public class LoginServiceTest {
         sut.login(request);
 
         verify(hashCompare).compare(request.password(), userMock.getPassword());
+    }
+
+    @Test
+    @DisplayName("Should throw InvalidCredentialsException if HashCompare returns false")
+    void case05() {
+        when(hashCompare.compare(request.password(), userMock.getPassword())).thenReturn(false);
+
+        assertThrows(InvalidCredentialsException.class, () -> sut.login(request));
     }
 }

@@ -28,8 +28,8 @@ public class LoginService implements LoginUseCase {
             throw new InvalidCredentialsException();
         }
 
-        this.tokenGenerator.generate(user.getId().toString());
-
-        return null;
+        String accessToken = this.tokenGenerator.generate(user.getId().toString());
+        
+        return accessToken;
     }
 }

@@ -63,5 +63,13 @@ public class BCryptAdapterTest {
 
 			verify(encoder).matches(value, hashedValue);
 		}
+
+		@Test
+		@DisplayName("Should throw if PasswordEncoder.matches throws")
+		void case02() {
+			when(encoder.matches(value, hashedValue)).thenThrow(new RuntimeException());
+
+			assertThrows(RuntimeException.class, () -> sut.compare(value, hashedValue));
+		}
 	}
 }

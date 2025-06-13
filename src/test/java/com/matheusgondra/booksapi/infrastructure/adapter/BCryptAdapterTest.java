@@ -71,5 +71,15 @@ public class BCryptAdapterTest {
 
 			assertThrows(RuntimeException.class, () -> sut.compare(value, hashedValue));
 		}
+
+		@Test
+		@DisplayName("Should return false if PasswordEncoder.matches returns false")
+		void case03() {
+			when(encoder.matches(value, hashedValue)).thenReturn(false);
+
+			boolean result = sut.compare(value, hashedValue);
+
+			assert !result;
+		}
 	}
 }

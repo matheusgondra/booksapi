@@ -24,11 +24,11 @@ public class JWTAdapter implements TokenGenerator {
 
 		Algorithm algorithm = Algorithm.HMAC256(this.secret);
 
-		JWT.create()
+		String accessToken = JWT.create()
 				.withExpiresAt(expiresAt)
 				.withSubject(payload)
 				.sign(algorithm);
 
-		return null;
+		return accessToken;
 	}
 }

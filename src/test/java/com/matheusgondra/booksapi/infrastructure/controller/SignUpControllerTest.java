@@ -52,7 +52,7 @@ public class SignUpControllerTest {
 	}
 
 	private RequestBuilder signUp(SignUpRequestDTO dto) throws Exception {
-		return post("/api/signup")
+		return post("/signup")
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(dto));

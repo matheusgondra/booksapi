@@ -1,5 +1,7 @@
 package com.matheusgondra.booksapi.infrastructure.controller;
 
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -11,6 +13,7 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.matheusgondra.booksapi.infrastructure.error.ResponseError;
 
+@Order(Ordered.HIGHEST_PRECEDENCE)
 @RestControllerAdvice
 public class BadRequestControllerAdvice {
     @ExceptionHandler(MethodArgumentNotValidException.class)

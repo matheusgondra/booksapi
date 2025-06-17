@@ -19,6 +19,11 @@ public class ResponseError {
         this.error = error;
     }
 
+    public ResponseError(HttpStatus statusCode, String field, String error) {
+        this.statusCode = statusCode.value();
+        this.error = field + " " + error;
+    }
+
     public String getError() {
         return error;
     }

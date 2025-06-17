@@ -6,6 +6,7 @@ import java.time.Instant;
 import org.springframework.beans.factory.annotation.Value;
 
 import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
 import com.matheusgondra.booksapi.application.protocol.cryptography.TokenGenerator;
 
 public class JWTAdapter implements TokenGenerator {
@@ -21,9 +22,12 @@ public class JWTAdapter implements TokenGenerator {
 		Duration oneDay = Duration.ofDays(1);
 		Instant expiresAt = Instant.now().plus(oneDay);
 
+		Algorithm algorithm = Algorithm.HMAC256(this.secret);
+
 		JWT.create()
 				.withExpiresAt(expiresAt)
-				.withSubject(payload);
+				.withSubject(payload)
+				.sign(algorithm);
 
 		return null;
 	}

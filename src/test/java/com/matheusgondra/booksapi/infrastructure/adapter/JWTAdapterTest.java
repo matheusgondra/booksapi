@@ -19,6 +19,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTCreator;
+import com.auth0.jwt.algorithms.Algorithm;
 
 @ExtendWith(MockitoExtension.class)
 public class JWTAdapterTest {
@@ -72,6 +73,25 @@ public class JWTAdapterTest {
 			sut.generate(payload);
 
 			verify(mockBuilder).withSubject(payload);
+		}
+	}
+
+	@Test
+	@DisplayName("Should sign the token with the secret when generating a token")
+	void case04() {
+		try (MockedStatic<JWT> mockedJWT = mockStatic(JWT.class)) {
+			this.setReturnsForMockedJWT(mockedJWT);
+
+			ArgumentCaptor<Algorithm> captorAlgorithm = ArgumentCaptor.forClass(Algorithm.class);
+
+			sut.generate(payload);
+
+			verify(mockBuilder).sign(captorAlgorithm.capture());
+			Algorithm capturedAlgorithm = captorAlgorithm.getValue();
+			Algorithm expectedAlgorithm = Algorithm.HMAC256(secret);
+
+			assertTrue(capturedAlgorithm.getName().equals(expectedAlgorithm.getName()));
+
 		}
 	}
 

@@ -87,6 +87,7 @@ public class JWTAdapterTest {
 			sut.generate(payload);
 
 			verify(mockBuilder).sign(captorAlgorithm.capture());
+
 			Algorithm capturedAlgorithm = captorAlgorithm.getValue();
 			Algorithm expectedAlgorithm = Algorithm.HMAC256(secret);
 
@@ -95,9 +96,22 @@ public class JWTAdapterTest {
 		}
 	}
 
+	@Test
+	@DisplayName("Should return a token on success")
+	void case05() {
+		try (MockedStatic<JWT> mockedJWT = mockStatic(JWT.class)) {
+			this.setReturnsForMockedJWT(mockedJWT);
+
+			String token = sut.generate(payload);
+
+			assertTrue(token.equals("mockedToken"));
+		}
+	}
+
 	private void setReturnsForMockedJWT(MockedStatic<JWT> mockedJWT) {
 		mockedJWT.when(JWT::create).thenReturn(mockBuilder);
 		mockedJWT.when(() -> mockBuilder.withExpiresAt(any(Instant.class))).thenReturn(mockBuilder);
 		mockedJWT.when(() -> mockBuilder.withSubject(any(String.class))).thenReturn(mockBuilder);
+		mockedJWT.when(() -> mockBuilder.sign(any(Algorithm.class))).thenReturn("mockedToken");
 	}
 }

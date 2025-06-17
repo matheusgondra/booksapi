@@ -22,7 +22,8 @@ public class JWTAdapter implements TokenGenerator {
 		Instant expiresAt = Instant.now().plus(oneDay);
 
 		JWT.create()
-				.withExpiresAt(expiresAt);
+				.withExpiresAt(expiresAt)
+				.withSubject(payload);
 
 		return null;
 	}

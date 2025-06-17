@@ -36,7 +36,7 @@ public class JWTAdapterTest {
 	@DisplayName("Should call JWT.create() when generating a token")
 	void case01() {
 		try (MockedStatic<JWT> mockedJWT = mockStatic(JWT.class)) {
-			mockedJWT.when(JWT::create).thenReturn(mockBuilder);
+			this.setReturnsForMockedJWT(mockedJWT);
 
 			sut.generate(payload);
 
@@ -48,8 +48,7 @@ public class JWTAdapterTest {
 	@DisplayName("Should set expiration time 1 day from now when generating a token")
 	void case02() {
 		try (MockedStatic<JWT> mockedJWT = mockStatic(JWT.class)) {
-			mockedJWT.when(JWT::create).thenReturn(mockBuilder);
-			mockedJWT.when(() -> mockBuilder.withExpiresAt(any(Instant.class))).thenReturn(mockBuilder);
+			this.setReturnsForMockedJWT(mockedJWT);
 
 			ArgumentCaptor<Instant> captor = ArgumentCaptor.forClass(Instant.class);
 
@@ -62,5 +61,23 @@ public class JWTAdapterTest {
 
 			assertTrue(Duration.between(expectedInstant, capturedInstant).abs().toMillis() < 1000);
 		}
+	}
+
+	@Test
+	@DisplayName("Should set subject to payload when generating a token")
+	void case03() {
+		try (MockedStatic<JWT> mockedJWT = mockStatic(JWT.class)) {
+			this.setReturnsForMockedJWT(mockedJWT);
+
+			sut.generate(payload);
+
+			verify(mockBuilder).withSubject(payload);
+		}
+	}
+
+	private void setReturnsForMockedJWT(MockedStatic<JWT> mockedJWT) {
+		mockedJWT.when(JWT::create).thenReturn(mockBuilder);
+		mockedJWT.when(() -> mockBuilder.withExpiresAt(any(Instant.class))).thenReturn(mockBuilder);
+		mockedJWT.when(() -> mockBuilder.withSubject(any(String.class))).thenReturn(mockBuilder);
 	}
 }

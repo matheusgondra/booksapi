@@ -35,7 +35,8 @@ public class LoginControllerTest {
     private UserRepository repository;
 
     private final LoginRequestDTO dto = new LoginRequestDTO("johndoe@email.com", "Password@123");
-    private final LoginRequestDTO invalidDto = new LoginRequestDTO("johndoe@email.com", "WrongPassword@123");
+    private final LoginRequestDTO invalidDTO = new LoginRequestDTO(null, "WrongPassword@123");
+    private final LoginRequestDTO unauthorizedDTO = new LoginRequestDTO("johndoe@email.com", "WrongPassword@123");
 
     @BeforeEach
     void setUp() throws Exception {
@@ -58,9 +59,17 @@ public class LoginControllerTest {
     @Test
     @DisplayName("Should return 401 if invalid credentials is provided")
     void case02() throws Exception {
-        mockMvc.perform(this.login(this.invalidDto))
+        mockMvc.perform(this.login(this.unauthorizedDTO))
             .andExpect(status().isUnauthorized())
             .andExpect(jsonPath("$.error").value("Invalid credentials"));
+    }
+
+    @Test
+    @DisplayName("Should return 400 if invalid request is provided")
+    void case03() throws Exception {
+        mockMvc.perform(this.login(this.invalidDTO))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.error").value("email must not be blank"));
     }
 
     private RequestBuilder signUp() throws Exception {

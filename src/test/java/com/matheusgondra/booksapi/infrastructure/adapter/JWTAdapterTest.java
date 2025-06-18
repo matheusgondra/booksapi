@@ -21,6 +21,7 @@ import com.auth0.jwt.interfaces.Verification;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTCreator;
+import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 
 @ExtendWith(MockitoExtension.class)
@@ -29,6 +30,8 @@ public class JWTAdapterTest {
 	private String secret = "testSecret";
 	private String payload = "testPayload";
 	private JWTCreator.Builder mockBuilder = mock(JWTCreator.Builder.class);
+	private Verification mockVerification = mock(Verification.class);
+	private JWTVerifier mockVerifier = mock(JWTVerifier.class);
 
 	@BeforeEach
 	void setup() {
@@ -115,17 +118,27 @@ public class JWTAdapterTest {
 
 	@Nested
 	class DecodeTests {
-		private Verification mockVerification = mock(Verification.class);
-
 		@Test
 		@DisplayName("Should call JWT.require() when decoding a token")
 		void case01() {
 			try (MockedStatic<JWT> mockedJWT = mockStatic(JWT.class)) {
-				mockedJWT.when(() -> JWT.require(any(Algorithm.class))).thenReturn(mockVerification);
+				setReturnsForMockedJWT(mockedJWT);
 
 				sut.decode("mockedToken");
 
 				mockedJWT.verify(() -> JWT.require(any(Algorithm.class)));
+			}
+		}
+
+		@Test
+		@DisplayName("Should build the verification when decoding a token")
+		void case02() {
+			try (MockedStatic<JWT> mockedJWT = mockStatic(JWT.class)) {
+				setReturnsForMockedJWT(mockedJWT);
+
+				sut.decode("mockedToken");
+
+				verify(mockVerification).build();
 			}
 		}
 	}
@@ -135,5 +148,7 @@ public class JWTAdapterTest {
 		mockedJWT.when(() -> mockBuilder.withExpiresAt(any(Instant.class))).thenReturn(mockBuilder);
 		mockedJWT.when(() -> mockBuilder.withSubject(any(String.class))).thenReturn(mockBuilder);
 		mockedJWT.when(() -> mockBuilder.sign(any(Algorithm.class))).thenReturn("mockedToken");
+		mockedJWT.when(() -> JWT.require(any(Algorithm.class))).thenReturn(mockVerification);
+		mockedJWT.when(mockVerification::build).thenReturn(mockVerifier);
 	}
 }

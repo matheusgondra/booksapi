@@ -17,12 +17,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
-import com.auth0.jwt.interfaces.Verification;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTCreator;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.interfaces.DecodedJWT;
+import com.auth0.jwt.interfaces.Verification;
 
 @ExtendWith(MockitoExtension.class)
 public class JWTAdapterTest {
@@ -32,6 +33,7 @@ public class JWTAdapterTest {
 	private JWTCreator.Builder mockBuilder = mock(JWTCreator.Builder.class);
 	private Verification mockVerification = mock(Verification.class);
 	private JWTVerifier mockVerifier = mock(JWTVerifier.class);
+	private DecodedJWT mockDecodedJWT = mock(DecodedJWT.class);
 
 	@BeforeEach
 	void setup() {
@@ -154,8 +156,19 @@ public class JWTAdapterTest {
 				assertTrue(result == null);
 			}
 		}
-	}
 
+		@Test
+		@DisplayName("Should return a subject if decode succeeds")
+		void case04() {
+			try (MockedStatic<JWT> mockedJWT = mockStatic(JWT.class)) {
+				setReturnsForMockedJWT(mockedJWT);
+			
+				String result = sut.decode("mockedToken");
+
+				assertTrue(result.equals("anySuject"));
+			}
+		}
+	}
 	private void setReturnsForMockedJWT(MockedStatic<JWT> mockedJWT) {
 		mockedJWT.when(JWT::create).thenReturn(mockBuilder);
 		mockedJWT.when(() -> mockBuilder.withExpiresAt(any(Instant.class))).thenReturn(mockBuilder);
@@ -163,5 +176,7 @@ public class JWTAdapterTest {
 		mockedJWT.when(() -> mockBuilder.sign(any(Algorithm.class))).thenReturn("mockedToken");
 		mockedJWT.when(() -> JWT.require(any(Algorithm.class))).thenReturn(mockVerification);
 		mockedJWT.when(mockVerification::build).thenReturn(mockVerifier);
+		mockedJWT.when(() -> mockVerifier.verify(any(String.class))).thenReturn(mockDecodedJWT);
+		mockedJWT.when(mockDecodedJWT::getSubject).thenReturn("anySuject");
 	}
 }

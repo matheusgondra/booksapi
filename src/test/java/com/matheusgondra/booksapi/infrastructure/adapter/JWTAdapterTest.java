@@ -11,11 +11,13 @@ import java.time.Instant;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
+import com.auth0.jwt.interfaces.Verification;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTCreator;
@@ -33,78 +35,98 @@ public class JWTAdapterTest {
 		sut = new JWTAdapter(secret);
 	}
 
-	@Test
-	@DisplayName("Should call JWT.create() when generating a token")
-	void case01() {
-		try (MockedStatic<JWT> mockedJWT = mockStatic(JWT.class)) {
-			this.setReturnsForMockedJWT(mockedJWT);
+	@Nested
+	class GenerateTests {
+		@Test
+		@DisplayName("Should call JWT.create() when generating a token")
+		void case01() {
+			try (MockedStatic<JWT> mockedJWT = mockStatic(JWT.class)) {
+				setReturnsForMockedJWT(mockedJWT);
 
-			sut.generate(payload);
+				sut.generate(payload);
 
-			mockedJWT.verify(JWT::create);
+				mockedJWT.verify(JWT::create);
+			}
+		}
+
+		@Test
+		@DisplayName("Should set expiration time 1 day from now when generating a token")
+		void case02() {
+			try (MockedStatic<JWT> mockedJWT = mockStatic(JWT.class)) {
+				setReturnsForMockedJWT(mockedJWT);
+
+				ArgumentCaptor<Instant> captor = ArgumentCaptor.forClass(Instant.class);
+
+				sut.generate(payload);
+
+				verify(mockBuilder).withExpiresAt(captor.capture());
+
+				Instant capturedInstant = captor.getValue();
+				Instant expectedInstant = Instant.now().plus(Duration.ofDays(1));
+
+				assertTrue(Duration.between(expectedInstant, capturedInstant).abs().toMillis() < 1000);
+			}
+		}
+
+		@Test
+		@DisplayName("Should set subject to payload when generating a token")
+		void case03() {
+			try (MockedStatic<JWT> mockedJWT = mockStatic(JWT.class)) {
+				setReturnsForMockedJWT(mockedJWT);
+
+				sut.generate(payload);
+
+				verify(mockBuilder).withSubject(payload);
+			}
+		}
+
+		@Test
+		@DisplayName("Should sign the token with the secret when generating a token")
+		void case04() {
+			try (MockedStatic<JWT> mockedJWT = mockStatic(JWT.class)) {
+				setReturnsForMockedJWT(mockedJWT);
+
+				ArgumentCaptor<Algorithm> captorAlgorithm = ArgumentCaptor.forClass(Algorithm.class);
+
+				sut.generate(payload);
+
+				verify(mockBuilder).sign(captorAlgorithm.capture());
+
+				Algorithm capturedAlgorithm = captorAlgorithm.getValue();
+				Algorithm expectedAlgorithm = Algorithm.HMAC256(secret);
+
+				assertTrue(capturedAlgorithm.getName().equals(expectedAlgorithm.getName()));
+
+			}
+		}
+
+		@Test
+		@DisplayName("Should return a token on success")
+		void case05() {
+			try (MockedStatic<JWT> mockedJWT = mockStatic(JWT.class)) {
+				setReturnsForMockedJWT(mockedJWT);
+
+				String token = sut.generate(payload);
+
+				assertTrue(token.equals("mockedToken"));
+			}
 		}
 	}
 
-	@Test
-	@DisplayName("Should set expiration time 1 day from now when generating a token")
-	void case02() {
-		try (MockedStatic<JWT> mockedJWT = mockStatic(JWT.class)) {
-			this.setReturnsForMockedJWT(mockedJWT);
+	@Nested
+	class DecodeTests {
+		private Verification mockVerification = mock(Verification.class);
 
-			ArgumentCaptor<Instant> captor = ArgumentCaptor.forClass(Instant.class);
+		@Test
+		@DisplayName("Should call JWT.require() when decoding a token")
+		void case01() {
+			try (MockedStatic<JWT> mockedJWT = mockStatic(JWT.class)) {
+				mockedJWT.when(() -> JWT.require(any(Algorithm.class))).thenReturn(mockVerification);
 
-			sut.generate(payload);
+				sut.decode("mockedToken");
 
-			verify(mockBuilder).withExpiresAt(captor.capture());
-
-			Instant capturedInstant = captor.getValue();
-			Instant expectedInstant = Instant.now().plus(Duration.ofDays(1));
-
-			assertTrue(Duration.between(expectedInstant, capturedInstant).abs().toMillis() < 1000);
-		}
-	}
-
-	@Test
-	@DisplayName("Should set subject to payload when generating a token")
-	void case03() {
-		try (MockedStatic<JWT> mockedJWT = mockStatic(JWT.class)) {
-			this.setReturnsForMockedJWT(mockedJWT);
-
-			sut.generate(payload);
-
-			verify(mockBuilder).withSubject(payload);
-		}
-	}
-
-	@Test
-	@DisplayName("Should sign the token with the secret when generating a token")
-	void case04() {
-		try (MockedStatic<JWT> mockedJWT = mockStatic(JWT.class)) {
-			this.setReturnsForMockedJWT(mockedJWT);
-
-			ArgumentCaptor<Algorithm> captorAlgorithm = ArgumentCaptor.forClass(Algorithm.class);
-
-			sut.generate(payload);
-
-			verify(mockBuilder).sign(captorAlgorithm.capture());
-
-			Algorithm capturedAlgorithm = captorAlgorithm.getValue();
-			Algorithm expectedAlgorithm = Algorithm.HMAC256(secret);
-
-			assertTrue(capturedAlgorithm.getName().equals(expectedAlgorithm.getName()));
-
-		}
-	}
-
-	@Test
-	@DisplayName("Should return a token on success")
-	void case05() {
-		try (MockedStatic<JWT> mockedJWT = mockStatic(JWT.class)) {
-			this.setReturnsForMockedJWT(mockedJWT);
-
-			String token = sut.generate(payload);
-
-			assertTrue(token.equals("mockedToken"));
+				mockedJWT.verify(() -> JWT.require(any(Algorithm.class)));
+			}
 		}
 	}
 

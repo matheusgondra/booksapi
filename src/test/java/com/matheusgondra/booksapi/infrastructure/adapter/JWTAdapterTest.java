@@ -141,6 +141,19 @@ public class JWTAdapterTest {
 				verify(mockVerification).build();
 			}
 		}
+
+		@Test
+		@DisplayName("Should return null if decode fails")
+		void case03() {
+			try (MockedStatic<JWT> mockedJWT = mockStatic(JWT.class)) {
+				setReturnsForMockedJWT(mockedJWT);
+				mockedJWT.when(() -> mockVerifier.verify(any(String.class))).thenThrow(new RuntimeException());
+
+				String result = sut.decode("mockedToken");
+
+				assertTrue(result == null);
+			}
+		}
 	}
 
 	private void setReturnsForMockedJWT(MockedStatic<JWT> mockedJWT) {

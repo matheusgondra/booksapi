@@ -30,8 +30,11 @@ public class JWTAdapter implements TokenGenerator, TokenDecode {
 
 	@Override
 	public String decode(String token) {
-		JWT.require(algorithm).build().verify(token);
-		
-		return null;
+		try {
+ 			JWT.require(algorithm).build().verify(token);
+			return null;
+		} catch (Exception ex) {
+			return null;
+		}
 	}
 }

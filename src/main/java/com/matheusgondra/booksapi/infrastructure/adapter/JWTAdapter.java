@@ -5,6 +5,7 @@ import java.time.Instant;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.matheusgondra.booksapi.application.protocol.cryptography.TokenDecode;
 import com.matheusgondra.booksapi.application.protocol.cryptography.TokenGenerator;
 
@@ -31,8 +32,9 @@ public class JWTAdapter implements TokenGenerator, TokenDecode {
 	@Override
 	public String decode(String token) {
 		try {
- 			JWT.require(algorithm).build().verify(token);
-			return null;
+ 			DecodedJWT tokenDecoded = JWT.require(algorithm).build().verify(token);
+			
+			return tokenDecoded.getSubject();
 		} catch (Exception ex) {
 			return null;
 		}

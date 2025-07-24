@@ -29,9 +29,11 @@ public class SecurityFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         String route = request.getRequestURI();
+        
         boolean isPublicRoute = Arrays.stream(PublicRoutes.values()).anyMatch(r -> "/api".concat(r.getRoute()).equals(route));
-        if (isPublicRoute) {
-            System.out.println("Rota é pública: " + route);
+        boolean isSwaggerRoute = route.startsWith("/api/docs") || route.startsWith("/api/v3/api-docs") || route.startsWith("/api/swagger-ui");
+        if (isPublicRoute || isSwaggerRoute) {
+            System.out.println("Rota é pública ou Swagger: " + route);
             filterChain.doFilter(request, response);
             return;
         }

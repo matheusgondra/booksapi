@@ -24,7 +24,6 @@ public class SecurityConfig {
 	@Bean
 	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		String[] swaggerPaths = { "/docs/**", "/v3/api-docs/**", "/swagger-ui/**" };
-		
 		String[] publicPaths = Arrays.stream(PublicRoutes.values())
 				.map(PublicRoutes::getRoute)
 				.toArray(String[]::new);

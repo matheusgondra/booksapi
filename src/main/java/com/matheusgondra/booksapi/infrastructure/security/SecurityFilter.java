@@ -1,21 +1,18 @@
 package com.matheusgondra.booksapi.infrastructure.security;
 
+import com.matheusgondra.booksapi.application.protocol.cryptography.TokenDecode;
+import com.matheusgondra.booksapi.infrastructure.enums.PublicRoutes;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Arrays;
-
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-
-import com.matheusgondra.booksapi.application.protocol.cryptography.TokenDecode;
-import com.matheusgondra.booksapi.infrastructure.enums.PublicRoutes;
-
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 
 @Component
 public class SecurityFilter extends OncePerRequestFilter {
@@ -26,14 +23,15 @@ public class SecurityFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+    protected void doFilterInternal(
+            HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         String route = request.getRequestURI();
-        
-        boolean isPublicRoute = Arrays.stream(PublicRoutes.values()).anyMatch(r -> "/api".concat(r.getRoute()).equals(route));
-        boolean isSwaggerRoute = route.startsWith("/api/docs") || route.startsWith("/api/v3/api-docs") || route.startsWith("/api/swagger-ui");
+
+        boolean isPublicRoute = Arrays.stream(PublicRoutes.values()).anyMatch(r -> r.getRoute().equals(route));
+        boolean isSwaggerRoute = route.startsWith("/api/docs") || route.startsWith("/api/v3/api-docs")
+                || route.startsWith("/api/swagger-ui");
         if (isPublicRoute || isSwaggerRoute) {
-            System.out.println("Rota é pública ou Swagger: " + route);
             filterChain.doFilter(request, response);
             return;
         }
@@ -52,7 +50,7 @@ public class SecurityFilter extends OncePerRequestFilter {
             return;
         }
 
-        if(SecurityContextHolder.getContext().getAuthentication() != null) {
+        if (SecurityContextHolder.getContext().getAuthentication() != null) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }

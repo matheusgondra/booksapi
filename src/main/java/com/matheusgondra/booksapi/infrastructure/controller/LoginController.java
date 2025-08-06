@@ -14,7 +14,7 @@ import com.matheusgondra.booksapi.infrastructure.dto.LoginResponseDTO;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/login")
+@RequestMapping("/api/login")
 public class LoginController {
     private final LoginUseCase useCase;
 

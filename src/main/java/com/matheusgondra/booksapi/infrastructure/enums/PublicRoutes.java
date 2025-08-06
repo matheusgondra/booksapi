@@ -1,8 +1,8 @@
 package com.matheusgondra.booksapi.infrastructure.enums;
 
 public enum PublicRoutes {
-    SIGNUP("/signup"),
-    LOGIN("/login");
+    SIGNUP("/api/signup"),
+    LOGIN("/api/login");
 
     private final String route;
 

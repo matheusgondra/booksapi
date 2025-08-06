@@ -24,7 +24,7 @@ import jakarta.validation.Valid;
 
 @Tag(name = "Authentication")
 @RestController
-@RequestMapping("/signup")
+@RequestMapping("/api/signup")
 public class SignUpController {
 	private final SignUpUseCase useCase;
 

@@ -52,37 +52,37 @@ public class LoginControllerTest {
     @DisplayName("Should return 200 on success")
     void case01() throws Exception {
         mockMvc.perform(this.login(this.dto))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.access_token").exists());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.access_token").exists());
     }
 
     @Test
     @DisplayName("Should return 401 if invalid credentials is provided")
     void case02() throws Exception {
         mockMvc.perform(this.login(this.unauthorizedDTO))
-            .andExpect(status().isUnauthorized())
-            .andExpect(jsonPath("$.error").value("Invalid credentials"));
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.error").value("Invalid credentials"));
     }
 
     @Test
     @DisplayName("Should return 400 if invalid request is provided")
     void case03() throws Exception {
         mockMvc.perform(this.login(this.invalidDTO))
-            .andExpect(status().isBadRequest())
-            .andExpect(jsonPath("$.error").value("email must not be blank"));
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error").value("email must not be blank"));
     }
 
     private RequestBuilder signUp() throws Exception {
         SignUpRequestDTO signUpDTO = new SignUpRequestDTO("john", "doe", "johndoe@email.com", "Password@123");
 
-        return post("/signup")
+        return post("/api/signup")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(signUpDTO));
     }
 
     private RequestBuilder login(LoginRequestDTO dto) throws Exception {
-        return post("/login")
+        return post("/api/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(dto));

@@ -17,87 +17,81 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 @ExtendWith(MockitoExtension.class)
 public class BCryptAdapterTest {
-	@InjectMocks
-	private BCryptAdapter sut;
+  @InjectMocks private BCryptAdapter sut;
 
-	@Mock
-	private PasswordEncoder encoder;
+  @Mock private PasswordEncoder encoder;
 
-	private final String value = "anyValue";
-	private final String hashedValue = "hashedValue";
+  private final String value = "anyValue";
+  private final String hashedValue = "hashedValue";
 
-	@BeforeEach
-	void setup() {
-		lenient()
-				.when(encoder.encode(value))
-				.thenReturn(hashedValue);
+  @BeforeEach
+  void setup() {
+    lenient().when(encoder.encode(value)).thenReturn(hashedValue);
 
-		lenient()
-				.when(encoder.matches(value, hashedValue))
-				.thenReturn(true);
-	}
+    lenient().when(encoder.matches(value, hashedValue)).thenReturn(true);
+  }
 
-	@Nested
-	class HashGeneratorTests {
-		@Test
-		@DisplayName("Should call PasswordEncoder.encode with correct value")
-		void case01() {
-			sut.generate(value);
+  @Nested
+  class HashGeneratorTests {
+    @Test
+    @DisplayName("Should call PasswordEncoder.encode with correct value")
+    void case01() {
+      sut.generate(value);
 
-			verify(encoder).encode(value);
-		}
+      verify(encoder).encode(value);
+    }
 
-		@Test
-		@DisplayName("Should throw if PasswordEncoder.encode throws")
-		void case02() {
-			when(encoder.encode(value)).thenThrow(new RuntimeException("Error encoding"));
+    @Test
+    @DisplayName("Should throw if PasswordEncoder.encode throws")
+    void case02() {
+      when(encoder.encode(value)).thenThrow(new RuntimeException("Error encoding"));
 
-			assertThrows(RuntimeException.class, () -> sut.generate("anyValue"));
-		}
+      assertThrows(RuntimeException.class, () -> sut.generate("anyValue"));
+    }
 
-		@Test
-		@DisplayName("Should return a hash on success")
-		void case03() {
-			String result = sut.generate(value);
+    @Test
+    @DisplayName("Should return a hash on success")
+    void case03() {
+      String result = sut.generate(value);
 
-			assert result.equals(hashedValue);
-		}
-	}
+      assert result.equals(hashedValue);
+    }
+  }
 
-	@Nested
-	class HashCompareTests {
-		@Test
-		@DisplayName("Should call PasswordEncoder.matches with correct values")
-		void case01() {
-			sut.compare(value, hashedValue);
+  @Nested
+  class HashCompareTests {
+    @Test
+    @DisplayName("Should call PasswordEncoder.matches with correct values")
+    void case01() {
+      sut.compare(value, hashedValue);
 
-			verify(encoder).matches(value, hashedValue);
-		}
+      verify(encoder).matches(value, hashedValue);
+    }
 
-		@Test
-		@DisplayName("Should throw if PasswordEncoder.matches throws")
-		void case02() {
-			when(encoder.matches(value, hashedValue)).thenThrow(new RuntimeException());
+    @Test
+    @DisplayName("Should throw if PasswordEncoder.matches throws")
+    void case02() {
+      when(encoder.matches(value, hashedValue)).thenThrow(new RuntimeException());
 
-			assertThrows(RuntimeException.class, () -> sut.compare(value, hashedValue));
-		}
+      assertThrows(RuntimeException.class, () -> sut.compare(value, hashedValue));
+    }
 
-		@Test
-		@DisplayName("Should return false if PasswordEncoder.matches returns false")
-		void case03() {
-			when(encoder.matches(value, hashedValue)).thenReturn(false);
+    @Test
+    @DisplayName("Should return false if PasswordEncoder.matches returns false")
+    void case03() {
+      when(encoder.matches(value, hashedValue)).thenReturn(false);
 
-			boolean result = sut.compare(value, hashedValue);
+      boolean result = sut.compare(value, hashedValue);
 
-			assert !result;
-		}
+      assert !result;
+    }
 
-		@Test
-		@DisplayName("Should return true if PasswordEncoder.matches returns true")
-		void case04() {
-			boolean result = sut.compare(value, hashedValue);
+    @Test
+    @DisplayName("Should return true if PasswordEncoder.matches returns true")
+    void case04() {
+      boolean result = sut.compare(value, hashedValue);
 
-			assert result;
-		}
-	}
+      assert result;
+    }
+  }
 }

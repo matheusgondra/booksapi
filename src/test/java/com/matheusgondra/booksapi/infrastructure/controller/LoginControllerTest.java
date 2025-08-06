@@ -4,6 +4,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.matheusgondra.booksapi.infrastructure.dto.LoginRequestDTO;
+import com.matheusgondra.booksapi.infrastructure.dto.SignUpRequestDTO;
+import com.matheusgondra.booksapi.infrastructure.repository.UserRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -16,75 +20,72 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.matheusgondra.booksapi.infrastructure.dto.LoginRequestDTO;
-import com.matheusgondra.booksapi.infrastructure.dto.SignUpRequestDTO;
-import com.matheusgondra.booksapi.infrastructure.repository.UserRepository;
-
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 @SpringBootTest
 public class LoginControllerTest {
-    @Autowired
-    private MockMvc mockMvc;
+  @Autowired private MockMvc mockMvc;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+  @Autowired private ObjectMapper objectMapper;
 
-    @Autowired
-    private UserRepository repository;
+  @Autowired private UserRepository repository;
 
-    private final LoginRequestDTO dto = new LoginRequestDTO("johndoe@email.com", "Password@123");
-    private final LoginRequestDTO invalidDTO = new LoginRequestDTO(null, "WrongPassword@123");
-    private final LoginRequestDTO unauthorizedDTO = new LoginRequestDTO("johndoe@email.com", "WrongPassword@123");
+  private final LoginRequestDTO dto = new LoginRequestDTO("johndoe@email.com", "Password@123");
+  private final LoginRequestDTO invalidDTO = new LoginRequestDTO(null, "WrongPassword@123");
+  private final LoginRequestDTO unauthorizedDTO =
+      new LoginRequestDTO("johndoe@email.com", "WrongPassword@123");
 
-    @BeforeEach
-    void setUp() throws Exception {
-        mockMvc.perform(this.signUp()).andExpect(status().isCreated());
-    }
+  @BeforeEach
+  void setUp() throws Exception {
+    mockMvc.perform(this.signUp()).andExpect(status().isCreated());
+  }
 
-    @AfterEach
-    void tearDown() {
-        this.repository.deleteAll();
-    }
+  @AfterEach
+  void tearDown() {
+    this.repository.deleteAll();
+  }
 
-    @Test
-    @DisplayName("Should return 200 on success")
-    void case01() throws Exception {
-        mockMvc.perform(this.login(this.dto))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.access_token").exists());
-    }
+  @Test
+  @DisplayName("Should return 200 on success")
+  void case01() throws Exception {
+    mockMvc
+        .perform(this.login(this.dto))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.access_token").exists());
+  }
 
-    @Test
-    @DisplayName("Should return 401 if invalid credentials is provided")
-    void case02() throws Exception {
-        mockMvc.perform(this.login(this.unauthorizedDTO))
-                .andExpect(status().isUnauthorized())
-                .andExpect(jsonPath("$.error").value("Invalid credentials"));
-    }
+  @Test
+  @DisplayName("Should return 401 if invalid credentials is provided")
+  void case02() throws Exception {
+    mockMvc
+        .perform(this.login(this.unauthorizedDTO))
+        .andExpect(status().isUnauthorized())
+        .andExpect(jsonPath("$.error").value("Invalid credentials"));
+  }
 
-    @Test
-    @DisplayName("Should return 400 if invalid request is provided")
-    void case03() throws Exception {
-        mockMvc.perform(this.login(this.invalidDTO))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.error").value("email must not be blank"));
-    }
+  @Test
+  @DisplayName("Should return 400 if invalid request is provided")
+  void case03() throws Exception {
+    mockMvc
+        .perform(this.login(this.invalidDTO))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.error").value("email must not be blank"));
+  }
 
-    private RequestBuilder signUp() throws Exception {
-        SignUpRequestDTO signUpDTO = new SignUpRequestDTO("john", "doe", "johndoe@email.com", "Password@123");
+  private RequestBuilder signUp() throws Exception {
+    SignUpRequestDTO signUpDTO =
+        new SignUpRequestDTO("john", "doe", "johndoe@email.com", "Password@123");
 
-        return post("/api/signup")
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(signUpDTO));
-    }
+    return post("/api/signup")
+        .contentType(MediaType.APPLICATION_JSON)
+        .accept(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsString(signUpDTO));
+  }
 
-    private RequestBuilder login(LoginRequestDTO dto) throws Exception {
-        return post("/api/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(dto));
-    }
+  private RequestBuilder login(LoginRequestDTO dto) throws Exception {
+    return post("/api/login")
+        .contentType(MediaType.APPLICATION_JSON)
+        .accept(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsString(dto));
+  }
 }

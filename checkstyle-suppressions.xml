@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE suppressions PUBLIC
+    "-//Checkstyle//DTD SuppressionFilter Configuration 1.2//EN"
+    "https://checkstyle.org/dtds/suppressions_1_2.dtd">
+
+<suppressions>
+    <!-- Suprimir todas as verificações de Javadoc -->
+    <suppress checks="MissingJavadocType" files=".*\.java"/>
+    <suppress checks="MissingJavadocMethod" files=".*\.java"/>
+    <suppress checks="MissingJavadocPackage" files=".*\.java"/>
+    <suppress checks="JavadocMethod" files=".*\.java"/>
+    <suppress checks="JavadocType" files=".*\.java"/>
+    <suppress checks="JavadocVariable" files=".*\.java"/>
+    <suppress checks="JavadocStyle" files=".*\.java"/>
+    <suppress checks="JavadocParagraph" files=".*\.java"/>
+    <suppress checks="JavadocTagContinuationIndentation" files=".*\.java"/>
+    <suppress checks="SummaryJavadoc" files=".*\.java"/>
+    <suppress checks="AtclauseOrder" files=".*\.java"/>
+    <suppress checks="NonEmptyAtclauseDescription" files=".*\.java"/>
+    <suppress checks="InvalidJavadocPosition" files=".*\.java"/>
+    <suppress checks="JavadocContentLocationCheck" files=".*\.java"/>
+    <suppress checks="SingleLineJavadoc" files=".*\.java"/>
+    <suppress checks="AbbreviationAsWordInName" files=".*\.java"/>
+</suppressions>

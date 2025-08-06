@@ -3,9 +3,9 @@ package com.matheusgondra.booksapi.domain.usecase;
 import com.matheusgondra.booksapi.domain.models.User;
 
 public interface SignUpUseCase {
-    SignUpResponse signUp(SignUpParam param);
+  SignUpResponse signUp(SignUpParam param);
 
-    record SignUpParam(String firstName, String lastName, String email, String password) {}
+  record SignUpParam(String firstName, String lastName, String email, String password) {}
 
-    record SignUpResponse(User user) {}
+  record SignUpResponse(User user) {}
 }

@@ -1,7 +1,7 @@
 package com.matheusgondra.booksapi.infrastructure.controller.auth;
 
-import com.matheusgondra.booksapi.domain.usecase.LoginUseCase;
-import com.matheusgondra.booksapi.domain.usecase.LoginUseCase.LoginRequest;
+import com.matheusgondra.booksapi.domain.usecase.auth.LoginUseCase;
+import com.matheusgondra.booksapi.domain.usecase.auth.LoginUseCase.LoginRequest;
 import com.matheusgondra.booksapi.infrastructure.dto.LoginRequestDTO;
 import com.matheusgondra.booksapi.infrastructure.dto.LoginResponseDTO;
 import jakarta.validation.Valid;

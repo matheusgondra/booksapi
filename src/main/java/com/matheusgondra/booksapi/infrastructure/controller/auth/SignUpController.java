@@ -1,8 +1,8 @@
 package com.matheusgondra.booksapi.infrastructure.controller.auth;
 
-import com.matheusgondra.booksapi.domain.usecase.SignUpUseCase;
-import com.matheusgondra.booksapi.domain.usecase.SignUpUseCase.SignUpParam;
-import com.matheusgondra.booksapi.domain.usecase.SignUpUseCase.SignUpResponse;
+import com.matheusgondra.booksapi.domain.usecase.auth.SignUpUseCase;
+import com.matheusgondra.booksapi.domain.usecase.auth.SignUpUseCase.SignUpParam;
+import com.matheusgondra.booksapi.domain.usecase.auth.SignUpUseCase.SignUpResponse;
 import com.matheusgondra.booksapi.infrastructure.doc.annotations.ApiBadRequest;
 import com.matheusgondra.booksapi.infrastructure.doc.annotations.ApiConflict;
 import com.matheusgondra.booksapi.infrastructure.doc.annotations.ApiInternalServerError;

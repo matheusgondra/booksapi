@@ -5,7 +5,7 @@ import com.matheusgondra.booksapi.application.protocol.gateway.AddUserGateway;
 import com.matheusgondra.booksapi.application.protocol.gateway.LoadUserByEmailGateway;
 import com.matheusgondra.booksapi.domain.exception.UserAlreadyExistsException;
 import com.matheusgondra.booksapi.domain.models.User;
-import com.matheusgondra.booksapi.domain.usecase.SignUpUseCase;
+import com.matheusgondra.booksapi.domain.usecase.auth.SignUpUseCase;
 
 public class SignUpService implements SignUpUseCase {
   private final LoadUserByEmailGateway loadUserByEmailGateway;

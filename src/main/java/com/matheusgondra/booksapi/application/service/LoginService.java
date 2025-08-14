@@ -5,7 +5,7 @@ import com.matheusgondra.booksapi.application.protocol.cryptography.TokenGenerat
 import com.matheusgondra.booksapi.application.protocol.gateway.LoadUserByEmailGateway;
 import com.matheusgondra.booksapi.domain.exception.InvalidCredentialsException;
 import com.matheusgondra.booksapi.domain.models.User;
-import com.matheusgondra.booksapi.domain.usecase.LoginUseCase;
+import com.matheusgondra.booksapi.domain.usecase.auth.LoginUseCase;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor

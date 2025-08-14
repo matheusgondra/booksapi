@@ -10,7 +10,7 @@ import com.matheusgondra.booksapi.application.protocol.cryptography.TokenGenerat
 import com.matheusgondra.booksapi.application.protocol.gateway.LoadUserByEmailGateway;
 import com.matheusgondra.booksapi.domain.exception.InvalidCredentialsException;
 import com.matheusgondra.booksapi.domain.models.User;
-import com.matheusgondra.booksapi.domain.usecase.LoginUseCase.LoginRequest;
+import com.matheusgondra.booksapi.domain.usecase.auth.LoginUseCase.LoginRequest;
 import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;

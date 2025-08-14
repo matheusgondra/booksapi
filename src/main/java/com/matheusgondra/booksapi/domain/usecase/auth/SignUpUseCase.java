@@ -1,4 +1,4 @@
-package com.matheusgondra.booksapi.domain.usecase;
+package com.matheusgondra.booksapi.domain.usecase.auth;
 
 import com.matheusgondra.booksapi.domain.models.User;
 

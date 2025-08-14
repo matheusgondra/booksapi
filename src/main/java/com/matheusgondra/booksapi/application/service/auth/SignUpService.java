@@ -1,4 +1,4 @@
-package com.matheusgondra.booksapi.application.service;
+package com.matheusgondra.booksapi.application.service.auth;
 
 import com.matheusgondra.booksapi.application.protocol.cryptography.HashGenerator;
 import com.matheusgondra.booksapi.application.protocol.gateway.AddUserGateway;

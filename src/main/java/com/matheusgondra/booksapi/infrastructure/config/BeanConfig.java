@@ -5,8 +5,8 @@ import com.matheusgondra.booksapi.application.protocol.cryptography.HashGenerato
 import com.matheusgondra.booksapi.application.protocol.cryptography.TokenGenerator;
 import com.matheusgondra.booksapi.application.protocol.gateway.AddUserGateway;
 import com.matheusgondra.booksapi.application.protocol.gateway.LoadUserByEmailGateway;
-import com.matheusgondra.booksapi.application.service.LoginService;
-import com.matheusgondra.booksapi.application.service.SignUpService;
+import com.matheusgondra.booksapi.application.service.auth.LoginService;
+import com.matheusgondra.booksapi.application.service.auth.SignUpService;
 import com.matheusgondra.booksapi.infrastructure.adapter.BCryptAdapter;
 import com.matheusgondra.booksapi.infrastructure.adapter.JWTAdapter;
 import com.matheusgondra.booksapi.infrastructure.gateway.UserGateway;

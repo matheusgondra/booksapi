@@ -1,4 +1,4 @@
-package com.matheusgondra.booksapi.application.service;
+package com.matheusgondra.booksapi.application.service.auth;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.lenient;

@@ -2,7 +2,6 @@ package com.matheusgondra.booksapi.domain.models;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 

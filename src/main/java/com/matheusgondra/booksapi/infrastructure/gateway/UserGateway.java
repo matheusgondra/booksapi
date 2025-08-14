@@ -6,10 +6,8 @@ import com.matheusgondra.booksapi.domain.models.User;
 import com.matheusgondra.booksapi.infrastructure.entity.UserEntity;
 import com.matheusgondra.booksapi.infrastructure.mapper.UserMapper;
 import com.matheusgondra.booksapi.infrastructure.repository.UserRepository;
-
-import lombok.AllArgsConstructor;
-
 import java.util.Optional;
+import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public class UserGateway implements LoadUserByEmailGateway, AddUserGateway {

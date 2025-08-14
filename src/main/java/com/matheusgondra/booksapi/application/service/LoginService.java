@@ -6,7 +6,6 @@ import com.matheusgondra.booksapi.application.protocol.gateway.LoadUserByEmailGa
 import com.matheusgondra.booksapi.domain.exception.InvalidCredentialsException;
 import com.matheusgondra.booksapi.domain.models.User;
 import com.matheusgondra.booksapi.domain.usecase.LoginUseCase;
-
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor

@@ -2,9 +2,7 @@ package com.matheusgondra.booksapi.infrastructure.adapter;
 
 import com.matheusgondra.booksapi.application.protocol.cryptography.HashCompare;
 import com.matheusgondra.booksapi.application.protocol.cryptography.HashGenerator;
-
 import lombok.AllArgsConstructor;
-
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @AllArgsConstructor

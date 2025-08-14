@@ -6,7 +6,6 @@ import com.matheusgondra.booksapi.infrastructure.dto.LoginRequestDTO;
 import com.matheusgondra.booksapi.infrastructure.dto.LoginResponseDTO;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

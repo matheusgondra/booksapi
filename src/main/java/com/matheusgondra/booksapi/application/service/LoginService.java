@@ -7,19 +7,13 @@ import com.matheusgondra.booksapi.domain.exception.InvalidCredentialsException;
 import com.matheusgondra.booksapi.domain.models.User;
 import com.matheusgondra.booksapi.domain.usecase.LoginUseCase;
 
+import lombok.AllArgsConstructor;
+
+@AllArgsConstructor
 public class LoginService implements LoginUseCase {
   private final LoadUserByEmailGateway loadUserByEmailGateway;
   private final HashCompare hashCompare;
   private final TokenGenerator tokenGenerator;
-
-  public LoginService(
-      LoadUserByEmailGateway loadUserByEmailGateway,
-      HashCompare hashCompare,
-      TokenGenerator tokenGenerator) {
-    this.loadUserByEmailGateway = loadUserByEmailGateway;
-    this.hashCompare = hashCompare;
-    this.tokenGenerator = tokenGenerator;
-  }
 
   @Override
   public String login(LoginRequest request) {

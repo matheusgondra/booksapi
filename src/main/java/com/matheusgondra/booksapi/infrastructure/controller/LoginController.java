@@ -5,6 +5,8 @@ import com.matheusgondra.booksapi.domain.usecase.LoginUseCase.LoginRequest;
 import com.matheusgondra.booksapi.infrastructure.dto.LoginRequestDTO;
 import com.matheusgondra.booksapi.infrastructure.dto.LoginResponseDTO;
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,12 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/login")
+@AllArgsConstructor
 public class LoginController {
   private final LoginUseCase useCase;
-
-  public LoginController(LoginUseCase useCase) {
-    this.useCase = useCase;
-  }
 
   @PostMapping
   public ResponseEntity<LoginResponseDTO> handle(@RequestBody @Valid LoginRequestDTO dto) {

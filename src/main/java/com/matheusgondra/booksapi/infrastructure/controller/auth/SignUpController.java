@@ -1,4 +1,4 @@
-package com.matheusgondra.booksapi.infrastructure.controller;
+package com.matheusgondra.booksapi.infrastructure.controller.auth;
 
 import com.matheusgondra.booksapi.domain.usecase.SignUpUseCase;
 import com.matheusgondra.booksapi.domain.usecase.SignUpUseCase.SignUpParam;

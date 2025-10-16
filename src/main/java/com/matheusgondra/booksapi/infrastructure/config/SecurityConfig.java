@@ -5,7 +5,6 @@ import com.matheusgondra.booksapi.infrastructure.security.SecurityFilter;
 import java.util.Arrays;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
@@ -21,7 +20,7 @@ public class SecurityConfig {
 
   @Bean
   SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    String[] swaggerPaths = {"/docs/**", "/v3/api-docs/**", "/swagger-ui/**"};
+    String[] swaggerPaths = {"/docs/**", "/swagger-ui/**", "/v3/api-docs/**"};
     String[] publicPaths =
         Arrays.stream(PublicRoutes.values()).map(PublicRoutes::getRoute).toArray(String[]::new);
 
@@ -34,7 +33,6 @@ public class SecurityConfig {
               auth.requestMatchers(swaggerPaths).permitAll();
               auth.anyRequest().authenticated();
             })
-        .httpBasic(Customizer.withDefaults())
         .addFilterBefore(this.securityFilter, UsernamePasswordAuthenticationFilter.class);
 
     return http.build();

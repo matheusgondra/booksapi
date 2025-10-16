@@ -29,9 +29,9 @@ public class SecurityFilter extends OncePerRequestFilter {
     boolean isPublicRoute =
         Arrays.stream(PublicRoutes.values()).anyMatch(r -> r.getRoute().equals(route));
     boolean isSwaggerRoute =
-        route.startsWith("/api/docs")
-            || route.startsWith("/api/v3/api-docs")
-            || route.startsWith("/api/swagger-ui");
+        route.startsWith("/docs")
+            || route.startsWith("/v3/api-docs")
+            || route.startsWith("/swagger-ui");
     if (isPublicRoute || isSwaggerRoute) {
       filterChain.doFilter(request, response);
       return;

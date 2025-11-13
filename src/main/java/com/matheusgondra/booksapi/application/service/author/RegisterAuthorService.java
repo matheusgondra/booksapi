@@ -1,6 +1,7 @@
 package com.matheusgondra.booksapi.application.service.author;
 
 import com.matheusgondra.booksapi.application.protocol.gateway.LoadAuthorByNameGateway;
+import com.matheusgondra.booksapi.domain.exception.AuthorAlreadyExistsException;
 import com.matheusgondra.booksapi.domain.usecase.author.RegisterAuthorUseCase;
 import lombok.AllArgsConstructor;
 
@@ -10,7 +11,9 @@ public class RegisterAuthorService implements RegisterAuthorUseCase {
 
   @Override
   public RegisterAuthorResponse register(RegisterAuthorParam param) {
-    this.loadAuthorByNameGateway.loadByName(param.name());
+    this.loadAuthorByNameGateway.loadByName(param.name()).ifPresent(author -> {
+      throw new AuthorAlreadyExistsException();
+    });
 
     return null;
   }

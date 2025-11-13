@@ -12,6 +12,7 @@ import com.matheusgondra.booksapi.application.protocol.gateway.LoadAuthorByNameG
 import com.matheusgondra.booksapi.domain.exception.AuthorAlreadyExistsException;
 import com.matheusgondra.booksapi.domain.models.Author;
 import com.matheusgondra.booksapi.domain.usecase.author.RegisterAuthorUseCase.RegisterAuthorParam;
+import com.matheusgondra.booksapi.domain.usecase.author.RegisterAuthorUseCase.RegisterAuthorResponse;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -30,6 +31,7 @@ class RegisterAuthorServiceTest {
 
   RegisterAuthorParam registerAuthorParam = new RegisterAuthorParam("anyName");
   Author author = new Author("anyName");
+  RegisterAuthorResponse expectedResponse = new RegisterAuthorResponse(author);
 
   @BeforeEach
   void setup() {
@@ -58,5 +60,13 @@ class RegisterAuthorServiceTest {
     sut.register(registerAuthorParam);
 
     verify(addAuthorGateway).add(author);
+  }
+
+  @Test
+  @DisplayName("Should register author successfully")
+  void case04() {
+    var result = sut.register(registerAuthorParam);
+
+    assert result.equals(expectedResponse);
   }
 }

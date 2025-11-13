@@ -21,6 +21,6 @@ public class RegisterAuthorService implements RegisterAuthorUseCase {
     Author author = new Author(param.name());
     this.addAuthorGateway.add(author);
 
-    return null;
+    return new RegisterAuthorResponse(author);
   }
 }
